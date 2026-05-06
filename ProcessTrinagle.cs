@@ -13,7 +13,7 @@ namespace laba_6_080426
         {
             DateTime now = DateTime.Now;
             string inputParams = $"A:{sa}, B:{sb}, C:{sc}";
-
+        
             try
             {
                 // 1. Валидация входных данных
@@ -23,7 +23,7 @@ namespace laba_6_080426
                     logger.Write(FormatError(now, inputParams, "Невалидные (нечисловые или отрицательные) данные", ""));
                     return res;
                 }
-
+        
                 // 2. Проверка на существование треугольника
                 if (sa + sb <= sc || sa + sc <= sb || sb + sc <= sa)
                 {
@@ -31,28 +31,34 @@ namespace laba_6_080426
                     logger.Write(FormatError(now, inputParams, res.Item1, ""));
                     return res;
                 }
-
+        
                 // 3. Определение типа
                 string type = "разносторонний";
                 if (sa == sb && sb == sc) type = "равносторонний";
                 else if (sa == sb || sb == sc || sa == sc) type = "равнобедренный";
-
-                // 4. Вычисление координат (вершина A в 0,0, B на оси X)
+        
+                // 4. Вычисление координат 
                 double x1 = 0, y1 = 0;
                 double x2 = sa, y2 = 0;
                 double x3 = (sa * sa + sb * sb - sc * sc) / (2 * sa);
                 double y3 = Math.Sqrt(Math.Max(0, sb * sb - x3 * x3));
-
+        
+                // ИСПРАВЛЕНИЕ: Сдвиг по X, если вершина ушла в минус (тупоугольный треугольник)
+                double minX = Math.Min(0, x3);
+                x1 -= minX;
+                x2 -= minX;
+                x3 -= minX;
+        
                 // 5. Масштабирование под 100x100
                 var rawCoords = new[] { (x1, y1), (x2, y2), (x3, y3) };
                 double maxX = rawCoords.Max(p => p.Item1);
                 double maxY = rawCoords.Max(p => p.Item2);
                 double scale = 100.0 / Math.Max(maxX, maxY);
-
+        
                 var scaledCoords = rawCoords
                     .Select(p => ((int)Math.Round(p.Item1 * scale), (int)Math.Round(p.Item2 * scale)))
                     .ToList();
-
+        
                 logger.Write(FormatSuccess(now, inputParams, type, scaledCoords));
                 return (type, scaledCoords);
             }
