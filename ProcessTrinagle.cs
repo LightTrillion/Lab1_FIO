@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace laba_6_080426
 {
-    internal class ProcessTrinagle
+    public class ProcessTrinagle
     {
-        internal static (string type, List<(int, int)> coords) PT(double sa, double sb, double sc, ILogger logger)
+        public static (string type, List<(int, int)> coords) PT(double sa, double sb, double sc, ILogger logger)
         {
             DateTime now = DateTime.Now;
             string inputParams = $"A:{sa}, B:{sb}, C:{sc}";
